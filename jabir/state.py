@@ -89,11 +89,21 @@ class State(rx.State):
                             answer[: i + 1],
                         )
                         yield
+
+                # answer = 'Hello Worldddddddddd!!'
+                # self.chat_history.append((self.question, ''))
+                # self.question = ''
+                # for i in range(len(answer)):
+                #     # Pause to show the streaming effect.
+                #     await asyncio.sleep(0.01)
+                #     # Add one letter at a time to the output.
+                #     self.chat_history[-1] = (
+                #         self.chat_history[-1][0],
+                #         answer[: i + 1],
+                #     )
+                #     yield
         except asyncio.TimeoutError:
             print("Request timed out")
-
-        except Exception as e:
-            print("An error occurred:", e)
 
         AnsweringStateLoader.answering = False
 

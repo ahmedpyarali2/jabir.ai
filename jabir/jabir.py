@@ -15,17 +15,31 @@ usd_pkr_data = pd.read_csv('./jabir/usd-pkr.csv')
 def get_klse_chart():
     # fig = px.line(klse_old_data, x="Date", y="Close", title='Life expectancy in Canada')
     # set up plotly figure
-    fig = go.Figure()
+    fig = go.Figure(layout=go.Layout())
 
-    # add line / trace 1 to figure
+    # Add line / trace 1 to figure
     fig.add_trace(go.Scatter(
         x=klse_old_data['Date'],
         y=klse_old_data['Close'],
-        marker=dict(
-            color="blue"
-        ),
-        showlegend=False
+        marker=dict(color="blue"),
+        showlegend=False,  # This hides the trace from the legend
+        name='KLSE Close'  # This sets the label for the trace
     ))
+
+    layout = go.Layout(
+        title="Plot Title",
+        xaxis_title="X Axis Title",
+        yaxis_title="Y Axis Title",
+        legend_title_text="Legend Title",  # This sets the legend title
+        font=dict(
+            family="Courier New, monospace",
+            size=18,
+            color="RebeccaPurple"
+        )
+    )
+
+    
+    fig.layout = layout
     return rx.plotly(data=fig)
 
 def get_palm_oil_chart():
