@@ -8,3 +8,5 @@ input_style = dict(
 button_style = dict(box_shadow=shadow)
 
 prompt_style = dict(margin_left='10em', margin_top='2em', postion='absolute')
+
+avatay_styles = dict(margin="1em")

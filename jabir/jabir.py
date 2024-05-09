@@ -1,45 +1,85 @@
 import reflex as rx
 from jabir import style
 from jabir.state import State
+import pandas as pd
+import plotly.graph_objects as go
 
 
-data = [
-    {"name": "Page A", "uv": 4000, "pv": 2400, "amt": 2400},
-    {"name": "Page B", "uv": 3000, "pv": 1398, "amt": 2210},
-    {"name": "Page C", "uv": 2000, "pv": 9800, "amt": 2290},
-    {"name": "Page D", "uv": 2780, "pv": 3908, "amt": 2000},
-    {"name": "Page E", "uv": 1890, "pv": 4800, "amt": 2181},
-    {"name": "Page F", "uv": 2390, "pv": 3800, "amt": 2500},
-    {"name": "Page G", "uv": 3490, "pv": 4300, "amt": 2100},
-]
+klse_pred_data = pd.read_csv('./jabir/KLSE_preds.csv')
+klse_old_data = pd.read_csv('./jabir/KLSE.csv')
+palm_oil_pred_data = pd.read_csv('./jabir/palm-oil-preds.csv')
+palm_oil_data = pd.read_csv('./jabir/palm-oil.csv')
+usd_pkr_data = pd.read_csv('./jabir/usd-pkr.csv')
 
 
-def get_chart():
-    return rx.recharts.line_chart(
-        rx.recharts.line(
-            data_key="pv",
-            stroke="#8884d8",
+def get_klse_chart():
+    # fig = px.line(klse_old_data, x="Date", y="Close", title='Life expectancy in Canada')
+    # set up plotly figure
+    fig = go.Figure()
+
+    # add line / trace 1 to figure
+    fig.add_trace(go.Scatter(
+        x=klse_old_data['Date'],
+        y=klse_old_data['Close'],
+        marker=dict(
+            color="blue"
         ),
-        rx.recharts.line(
-            data_key="uv",
-            stroke="#82ca9d",
+        showlegend=False
+    ))
+    return rx.plotly(data=fig)
+
+def get_palm_oil_chart():
+    fig = go.Figure()
+
+    # add line / trace 1 to figure
+    fig.add_trace(go.Scatter(
+        x=palm_oil_data['Date'],
+        y=palm_oil_data['Close'],
+        marker=dict(
+            color="blue"
         ),
-        rx.recharts.x_axis(data_key="name"),
-        rx.recharts.y_axis(),
-        rx.recharts.graphing_tooltip(),
-        rx.recharts.legend(),
-        data=data,
-        width=500,
-        height=200,
-    )
+        showlegend=False
+    ))
+    return rx.plotly(data=fig)
+
+def get_usd_pkr_chart():
+    fig = go.Figure()
+
+    # add line / trace 1 to figure
+    fig.add_trace(go.Scatter(
+        x=usd_pkr_data['Date'],
+        y=usd_pkr_data['Close'],
+        marker=dict(
+            color="blue"
+        ),
+        showlegend=False
+    ))
+    return rx.plotly(data=fig)
+
 
 def qa(question: str, answer: str) -> rx.Component:
     return rx.box(
-        rx.hstack(rx.chakra.avatar(size="md"), rx.box(question, text_align='right')),
-        rx.hstack(rx.chakra.avatar(size="md"), rx.box(answer, text_align='left')),
         rx.hstack(
-            get_chart(),
-            get_chart()
+            rx.chakra.avatar(size="sm"), 
+            rx.heading('You', size="3")
+        ),
+        rx.hstack(
+            rx.markdown(question, text_align='right'),
+            style=style.avatay_styles
+        ),
+        rx.hstack(
+            rx.chakra.avatar(src='avatar.jpeg', size="sm"), 
+            rx.heading('Jabir.AI', size="3")
+        ),
+        rx.hstack(
+            rx.markdown(answer, text_align='left'),
+            style=style.avatay_styles
+        ),
+        rx.vstack(
+            get_klse_chart(),
+            get_palm_oil_chart(),
+            get_usd_pkr_chart(),
+            align='center'
         )
     )
 
@@ -48,10 +88,19 @@ def chat() -> rx.Component:
     return rx.box(
         rx.foreach(
             State.chat_history,
-            lambda messages: qa(messages[0], messages[1])
+            lambda messages: qa(messages[0], messages[1]),
         )
     )
 
+
+def header() -> rx.Component:
+    return rx.flex(
+        rx.callout(
+            "Jabir.ai - Empower your procurement decisions",
+            size="3",
+            style=dict(margin_top="1em",width= "100%", justify_content="center")
+        )
+    )
 
 def prompt() -> rx.Component:
     return rx.hstack(
@@ -75,6 +124,7 @@ def prompt() -> rx.Component:
 
 def index() -> rx.Component:
     return rx.container(
+        header(),
         chat(),
         prompt()
     )
