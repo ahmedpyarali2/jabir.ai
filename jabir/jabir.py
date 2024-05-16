@@ -3,6 +3,8 @@ from jabir import style
 from jabir.state import State
 import pandas as pd
 import plotly.graph_objects as go
+from datetime import datetime
+
 
 
 klse_pred_data = pd.read_csv('./jabir/KLSE_preds.csv')
@@ -11,6 +13,9 @@ palm_oil_pred_data = pd.read_csv('./jabir/palm-oil-preds.csv')
 palm_oil_data = pd.read_csv('./jabir/palm-oil.csv')
 usd_pkr_data = pd.read_csv('./jabir/usd-pkr.csv')
 
+
+def get_meter():
+    return rx.image(src=f'chart-{State.scale}.png', width='500px')
 
 def get_klse_chart():
     # fig = px.line(klse_old_data, x="Date", y="Close", title='Life expectancy in Canada')
@@ -93,6 +98,7 @@ def qa(question: str, answer: str) -> rx.Component:
             get_klse_chart(),
             get_palm_oil_chart(),
             get_usd_pkr_chart(),
+            get_meter(),
             align='center'
         )
     )
